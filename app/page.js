@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Meals from "./meals/page";
 
 export default function Home() {
 	return (
