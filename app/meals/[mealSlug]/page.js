@@ -1,10 +1,10 @@
 import Image from "next/image";
 import classes from "./page.module.css";
-import { getMeal } from "@/lib/meals";
+import { getMeal, getMeals } from "@/lib/meals";
 import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }) {
-	const meal = getMeal(params.mealSlug);
+	const meal = await getMeal(params.mealSlug);
 
 	if (!meal) {
 		notFound();
@@ -16,7 +16,24 @@ export async function generateMetadata({ params }) {
 	};
 }
 
+export async function getStaticPaths() {
+	const meals = await getMeals();
+
+	const paths = meals.map((meal) => ({
+		params: { mealSlug: meal.slug },
+	}));
+
+	return {
+		paths,
+		fallback: false,
+	};
+}
+
 export default function MealDetailPage({ params }) {
+	if (!params.mealSlug) {
+		notFound();
+	}
+
 	const meal = getMeal(params.mealSlug);
 
 	if (!meal) {
